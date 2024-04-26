@@ -1,25 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { Line } from 'react-chartjs-2';
 
-function App() {
+const GraphComponent = ({ data }) => {
+  return <Line data={data} />;
+};
+
+export default function App() {
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [numbers, setNumbers] = useState([]);
+
+  const handleDateChange = (date, setter) => {
+    setter(date);
+  };
+
+  const handleNumberChange = (event) => {
+    setNumbers([...numbers, parseInt(event.target.value)]);
+  };
+
+  const data = {
+    labels: numbers.map((_, index) => index + 1),
+    datasets: [
+      {
+        label: 'Numbers',
+        data: numbers,
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+      },
+    ],
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Enter Numbers and Dates</h1>
+      <input type="number" onChange={handleNumberChange} />
+      <DatePicker selected={startDate} onChange={(date) => handleDateChange(date, setStartDate)} />
+      <DatePicker selected={endDate} onChange={(date) => handleDateChange(date, setEndDate)} />
+      <GraphComponent data={data} />
     </div>
   );
-}
+};
 
-export default App;
+
+
+
+
+
+
+
